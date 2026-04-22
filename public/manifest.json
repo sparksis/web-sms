@@ -1,0 +1,16 @@
+{
+  "name": "VoIP.ms SMS",
+  "short_name": "Web SMS",
+  "description": "Messaging app for VoIP.ms",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#B71C1C",
+  "theme_color": "#B71C1C",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}
