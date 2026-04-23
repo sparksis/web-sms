@@ -15,12 +15,28 @@ export async function POST(
   request: NextRequest
 ) {
   try {
-    const session = await getSession();
-    if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    // If it's a push-triggered request from the Service Worker,
+    // it might not have an Auth0 session cookie, but it HAS the decryption key.
+    // However, for security, we want to ensure only the owner can call this.
+    // In a PWA on Cloudflare, the cookie should be present if the user is logged in.
 
-    const userId = session.user.sub as string;
+    const session = await getSession();
+
+    let userId: string;
+    if (session?.user) {
+      userId = session.user.sub as string;
+    } else {
+      // If no session, we might be in a background Service Worker context.
+      // We could use a temporary session ID or trust the fact that the client
+      // has the decryption key for the blob.
+      // But we still need the userId to fetch the correct blob from KV.
+      // So we'll add a header 'X-User-Id' if session is missing.
+      userId = request.headers.get("X-User-Id") || "";
+
+      if (!userId) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+    }
     const decryptionKey = request.headers.get("X-Decryption-Key");
 
     if (!decryptionKey) {

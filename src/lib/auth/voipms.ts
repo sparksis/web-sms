@@ -1,5 +1,6 @@
 import { AuthAdapter, AuthCredentials } from "./types";
 import { generateSessionKey, encrypt } from "@/lib/crypto";
+import { set as setKey } from "idb-keyval";
 
 const DECRYPTION_KEY_KEY = "voipms_decryption_key";
 
@@ -46,6 +47,22 @@ export class VoipMsAuthAdapter implements AuthAdapter {
       if (data.status === "success" || data.status === "no_did") {
         // 5. Persist only the decryption key locally
         localStorage.setItem(DECRYPTION_KEY_KEY, decryptionKey);
+        // Also store in IndexedDB for Service Worker access
+        await setKey(DECRYPTION_KEY_KEY, decryptionKey);
+
+        // Map DIDs to User ID for webhook lookups
+        if (data.status === "success") {
+          // We need the Auth0 session to get the user ID on the server
+          await fetch("/api/push/did-map", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Decryption-Key": decryptionKey
+            },
+            body: JSON.stringify({ method: "sync" }),
+          });
+        }
+
         return { success: true };
       }
 
