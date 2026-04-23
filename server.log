@@ -1,0 +1,93 @@
+
+> web-sms@0.1.0 start /app
+> next start
+
+▲ Next.js 16.2.4
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+✓ Ready in 212ms
+Using secrets defined in .dev.vars
+Proxy error: TypeError: t(...).getAll is not a function
+    at a.getCookies (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:254892)
+    at r.default.getConfig (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:282743)
+    at l (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:258795)
+    at Object.getSession (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:50812)
+    at r.getSession (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:332623)
+    at A (.next/server/edge/chunks/[root-of-the-server]__0c~mho7._.js:2:1946)
+    at ev.do (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:12:14194)
+    at <unknown> (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:12:18619)
+    at <unknown> (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:8:78330) {
+
+}
+Proxy error: TypeError: t(...).getAll is not a function
+    at a.getCookies (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:254892)
+    at r.default.getConfig (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:282743)
+    at l (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:258795)
+    at Object.getSession (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:50812)
+    at r.getSession (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:332623)
+    at A (.next/server/edge/chunks/[root-of-the-server]__0c~mho7._.js:2:1946)
+    at ev.do (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:12:14194)
+    at <unknown> (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:12:18619)
+    at <unknown> (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:8:78330) {
+
+}
+Proxy error: TypeError: t(...).getAll is not a function
+    at a.getCookies (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:254892)
+    at r.default.getConfig (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:282743)
+    at l (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:258795)
+    at Object.getSession (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:50812)
+    at r.getSession (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:332623)
+    at A (.next/server/edge/chunks/[root-of-the-server]__0c~mho7._.js:2:1946)
+    at ev.do (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:12:14194)
+    at <unknown> (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:12:18619)
+    at <unknown> (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:8:78330) {
+
+}
+Proxy error: TypeError: t(...).getAll is not a function
+    at a.getCookies (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:254892)
+    at r.default.getConfig (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:282743)
+    at l (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:258795)
+    at Object.getSession (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:50812)
+    at r.getSession (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:332623)
+    at A (.next/server/edge/chunks/[root-of-the-server]__0c~mho7._.js:2:1946)
+    at ev.do (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:12:14194)
+    at <unknown> (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:12:18619)
+    at <unknown> (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:8:78330) {
+
+}
+Proxy error: TypeError: t(...).getAll is not a function
+    at a.getCookies (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:254892)
+    at r.default.getConfig (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:282743)
+    at l (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:258795)
+    at Object.getSession (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:50812)
+    at r.getSession (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:332623)
+    at A (.next/server/edge/chunks/[root-of-the-server]__0c~mho7._.js:2:1946)
+    at ev.do (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:12:14194)
+    at <unknown> (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:12:18619)
+    at <unknown> (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:8:78330) {
+
+}
+Proxy error: TypeError: t(...).getAll is not a function
+    at a.getCookies (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:254892)
+    at r.default.getConfig (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:282743)
+    at l (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:258795)
+    at Object.getSession (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:50812)
+    at r.getSession (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:332623)
+    at A (.next/server/edge/chunks/[root-of-the-server]__0c~mho7._.js:2:1946)
+    at ev.do (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:12:14194)
+    at <unknown> (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:12:18619)
+    at <unknown> (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:8:78330) {
+
+}
+Proxy error: TypeError: t(...).getAll is not a function
+    at a.getCookies (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:254892)
+    at r.default.getConfig (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:282743)
+    at l (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:258795)
+    at Object.getSession (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:50812)
+    at r.getSession (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:30:332623)
+    at A (.next/server/edge/chunks/[root-of-the-server]__0c~mho7._.js:2:1946)
+    at ev.do (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:12:14194)
+    at <unknown> (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:12:18619)
+    at <unknown> (.next/server/edge/chunks/[root-of-the-server]__0nm8ky-._.js:8:78330) {
+
+}
