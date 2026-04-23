@@ -5,14 +5,14 @@ import { useAuth } from "./useAuth";
 import { Message } from "@/lib/models";
 
 export function useSms(contactNumber?: string) {
-  const { credentials, isAuthenticated } = useAuth();
+  const { sessionInfo, isAuthenticated } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSending, setIsSending] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchMessages = useCallback(async () => {
-    if (!isAuthenticated || !credentials || !contactNumber) return;
+    if (!isAuthenticated || !sessionInfo || !contactNumber) return;
 
     setIsLoading(true);
     setError(null);
@@ -21,11 +21,13 @@ export function useSms(contactNumber?: string) {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 90);
 
-      const response = await fetch("/api/voipms", {
+      const response = await fetch("/api/voipms/getSMS", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Decryption-Key": sessionInfo.decryptionKey,
+        },
         body: JSON.stringify({
-          ...credentials,
           method: "getSMS",
           contact: contactNumber,
           from: thirtyDaysAgo.toISOString().split('T')[0],
@@ -35,9 +37,9 @@ export function useSms(contactNumber?: string) {
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json() as { status: string; sms?: unknown[] };
 
-      if (data.status === "success") {
+      if (data.status === "success" && data.sms) {
         interface VoipMsSms {
           id: string;
           date: string;
@@ -46,7 +48,7 @@ export function useSms(contactNumber?: string) {
           contact: string;
           message: string;
         }
-        const fetchedMessages: Message[] = data.sms.map((s: VoipMsSms) => ({
+        const fetchedMessages: Message[] = (data.sms as VoipMsSms[]).map((s: VoipMsSms) => ({
           id: s.id,
           date: s.date,
           type: s.type === "1" ? "incoming" : "outgoing",
@@ -68,18 +70,20 @@ export function useSms(contactNumber?: string) {
     } finally {
       setIsLoading(false);
     }
-  }, [credentials, isAuthenticated, contactNumber]);
+  }, [sessionInfo, isAuthenticated, contactNumber]);
 
   const sendMessage = useCallback(async (did: string, message: string) => {
-    if (!isAuthenticated || !credentials || !contactNumber) return { success: false };
+    if (!isAuthenticated || !sessionInfo || !contactNumber) return { success: false };
 
     setIsSending(true);
     try {
-      const response = await fetch("/api/voipms", {
+      const response = await fetch("/api/voipms/sendSMS", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Decryption-Key": sessionInfo.decryptionKey,
+        },
         body: JSON.stringify({
-          ...credentials,
           method: "sendSMS",
           did,
           dst: contactNumber,
@@ -87,7 +91,7 @@ export function useSms(contactNumber?: string) {
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json() as { status: string };
 
       if (data.status === "success") {
         await fetchMessages();
@@ -101,7 +105,7 @@ export function useSms(contactNumber?: string) {
     } finally {
       setIsSending(false);
     }
-  }, [credentials, isAuthenticated, contactNumber, fetchMessages]);
+  }, [sessionInfo, isAuthenticated, contactNumber, fetchMessages]);
 
   useEffect(() => {
     const init = () => {

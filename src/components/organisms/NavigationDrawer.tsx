@@ -4,6 +4,7 @@ import React from "react";
 import Avatar from "../atoms/Avatar";
 import Icon from "../atoms/Icon";
 import { useAuth } from "@/hooks/useAuth";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 interface NavigationDrawerProps {
   isOpen: boolean;
@@ -11,7 +12,8 @@ interface NavigationDrawerProps {
 }
 
 const NavigationDrawer: React.FC<NavigationDrawerProps> = ({ isOpen, onClose }) => {
-  const { credentials, logout } = useAuth();
+  const { logout } = useAuth();
+  const { user } = useUser();
 
   if (!isOpen) return null;
 
@@ -23,8 +25,8 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({ isOpen, onClose }) 
       />
       <div className="fixed top-0 left-0 bottom-0 w-64 bg-white dark:bg-zinc-950 z-50 shadow-2xl flex flex-col">
         <div className="p-6 bg-primary text-white">
-          <Avatar name={credentials?.email} size="lg" className="mb-4" />
-          <div className="font-semibold truncate">{credentials?.email}</div>
+          <Avatar name={user?.email || ""} size="lg" className="mb-4" />
+          <div className="font-semibold truncate">{user?.email || "User"}</div>
           <div className="text-xs text-zinc-200">VoIP.ms API</div>
         </div>
 

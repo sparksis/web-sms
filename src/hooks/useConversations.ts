@@ -5,13 +5,13 @@ import { useAuth } from "./useAuth";
 import { Conversation, Message } from "@/lib/models";
 
 export function useConversations() {
-  const { credentials, isAuthenticated } = useAuth();
+  const { sessionInfo, isAuthenticated } = useAuth();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchConversations = useCallback(async () => {
-    if (!isAuthenticated || !credentials) return;
+    if (!isAuthenticated || !sessionInfo) return;
 
     setIsLoading(true);
     setError(null);
@@ -20,11 +20,13 @@ export function useConversations() {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-      const response = await fetch("/api/voipms", {
+      const response = await fetch("/api/voipms/getSMS", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Decryption-Key": sessionInfo.decryptionKey,
+        },
         body: JSON.stringify({
-          ...credentials,
           method: "getSMS",
           from: thirtyDaysAgo.toISOString().split('T')[0],
           to: new Date().toISOString().split('T')[0],
@@ -33,9 +35,9 @@ export function useConversations() {
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json() as { status: string; sms?: unknown[] };
 
-      if (data.status === "success") {
+      if (data.status === "success" && data.sms) {
         interface VoipMsSms {
           id: string;
           date: string;
@@ -44,7 +46,7 @@ export function useConversations() {
           contact: string;
           message: string;
         }
-        const messages: Message[] = data.sms.map((s: VoipMsSms) => ({
+        const messages: Message[] = (data.sms as VoipMsSms[]).map((s: VoipMsSms) => ({
           id: s.id,
           date: s.date,
           type: s.type === "1" ? "incoming" : "outgoing",
@@ -78,7 +80,7 @@ export function useConversations() {
     } finally {
       setIsLoading(false);
     }
-  }, [credentials, isAuthenticated]);
+  }, [sessionInfo, isAuthenticated]);
 
   useEffect(() => {
     const init = () => {

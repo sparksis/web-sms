@@ -1,52 +1,55 @@
 import { AuthAdapter, AuthCredentials } from "./types";
+import { generateSessionKey, encrypt } from "@/lib/crypto";
 
-const CREDENTIALS_KEY = "voipms_credentials_v2";
-
-/**
- * Simple XOR-based "encryption" for local storage.
- * NOTE: For production, a more robust solution like Web Crypto API with user-derived keys
- * would be preferred, but this provides a layer beyond plaintext.
- */
-function obfuscate(text: string): string {
-  return btoa(text.split('').map((char, i) =>
-    String.fromCharCode(char.charCodeAt(0) ^ (i % 255))
-  ).join(''));
-}
-
-function deobfuscate(text: string): string {
-  try {
-    return atob(text).split('').map((char, i) =>
-      String.fromCharCode(char.charCodeAt(0) ^ (i % 255))
-    ).join('');
-  } catch {
-    return "";
-  }
-}
+const DECRYPTION_KEY_KEY = "voipms_decryption_key";
 
 export class VoipMsAuthAdapter implements AuthAdapter {
   async login(credentials: AuthCredentials): Promise<{ success: boolean; error?: string }> {
     try {
-      // Use the proxy for validation
-      const response = await fetch("/api/voipms", {
+      // 1. Generate local decryption key
+      const decryptionKey = await generateSessionKey();
+
+      // 2. Encrypt credentials locally
+      const { encrypted: encryptedPayload, iv } = await encrypt(JSON.stringify(credentials), decryptionKey);
+
+      // 3. Store encrypted credentials on the server (keyed by Auth0 ID automatically on server)
+      const storeResponse = await fetch("/api/voipms/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...credentials,
+          encryptedPayload,
+          iv,
+        }),
+      });
+
+      if (!storeResponse.ok) {
+        const errorData = await storeResponse.json() as { error?: string };
+        return { success: false, error: errorData.error || "Failed to initialize secure session" };
+      }
+
+      // 4. Test the proxy with the new session
+      const testResponse = await fetch("/api/voipms/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Decryption-Key": decryptionKey,
+        },
+        body: JSON.stringify({
           method: "getDIDsInfo",
         }),
       });
 
-      const data = await response.json();
+      const data = await testResponse.json() as { status: string };
 
       if (data.status === "success" || data.status === "no_did") {
-        const encrypted = obfuscate(JSON.stringify(credentials));
-        localStorage.setItem(CREDENTIALS_KEY, encrypted);
+        // 5. Persist only the decryption key locally
+        localStorage.setItem(DECRYPTION_KEY_KEY, decryptionKey);
         return { success: true };
       }
 
       return {
         success: false,
-        error: data.status === "invalid_credentials" ? "Invalid email or API password" : data.status
+        error: data.status === "invalid_credentials" ? "Invalid email or API password" : data.status,
       };
     } catch (error) {
       console.error("Login error:", error);
@@ -55,27 +58,28 @@ export class VoipMsAuthAdapter implements AuthAdapter {
   }
 
   async logout(): Promise<void> {
-    localStorage.removeItem(CREDENTIALS_KEY);
-    // Also remove old version if exists
+    localStorage.removeItem(DECRYPTION_KEY_KEY);
+    // Cleanup old keys
+    localStorage.removeItem("voipms_session_id");
+    localStorage.removeItem("voipms_credentials_v2");
     localStorage.removeItem("voipms_credentials");
   }
 
   getCredentials(): AuthCredentials | null {
-    if (typeof window === "undefined") return null;
-    const stored = localStorage.getItem(CREDENTIALS_KEY);
-    if (!stored) return null;
+    return null;
+  }
 
-    try {
-      const decrypted = deobfuscate(stored);
-      return JSON.parse(decrypted);
-    } catch {
-      return null;
-    }
+  getSessionInfo(): { decryptionKey: string } | null {
+    if (typeof window === "undefined") return null;
+    const decryptionKey = localStorage.getItem(DECRYPTION_KEY_KEY);
+
+    if (!decryptionKey) return null;
+    return { decryptionKey };
   }
 
   isAuthenticated(): boolean {
-    return this.getCredentials() !== null;
+    return this.getSessionInfo() !== null;
   }
 }
 
-export const authAdapter: AuthAdapter = new VoipMsAuthAdapter();
+export const authAdapter: VoipMsAuthAdapter = new VoipMsAuthAdapter();

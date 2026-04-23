@@ -34,6 +34,6 @@ export function useAuth() {
     isLoading,
     login,
     logout,
-    credentials: authAdapter.getCredentials(),
+    sessionInfo: (authAdapter as unknown as { getSessionInfo: () => { decryptionKey: string } | null }).getSessionInfo?.(),
   };
 }
