@@ -3,6 +3,7 @@
 import React from "react";
 import Avatar from "../atoms/Avatar";
 import Icon from "../atoms/Icon";
+import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { useUser } from "@auth0/nextjs-auth0/client";
 
@@ -31,14 +32,26 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({ isOpen, onClose }) 
         </div>
 
         <nav className="flex-1 py-4">
+          <Link
+            href="/"
+            onClick={onClose}
+            className="px-6 py-3 flex items-center gap-4 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 cursor-pointer"
+          >
+            <Icon name="message" size={20} />
+            <span>Messages</span>
+          </Link>
           <div className="px-6 py-3 flex items-center gap-4 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 cursor-pointer">
             <Icon name="archive" size={20} />
             <span>Archived</span>
           </div>
-          <div className="px-6 py-3 flex items-center gap-4 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 cursor-pointer">
-            <Icon name="call" size={20} />
-            <span>DIDs</span>
-          </div>
+          <Link
+            href="/settings"
+            onClick={onClose}
+            className="px-6 py-3 flex items-center gap-4 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 cursor-pointer"
+          >
+            <Icon name="settings" size={20} />
+            <span>Settings</span>
+          </Link>
         </nav>
 
         <div className="p-4 border-t border-zinc-100 dark:border-zinc-800">

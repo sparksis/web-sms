@@ -29,5 +29,8 @@
 			"binding": "SESSION_KV",
 			"id": "placeholder"
 		}
-	]
+	],
+	"vars": {
+		"NEXT_PUBLIC_VAPID_PUBLIC_KEY": "BEv6rwhqHmTsovyH7gFCXwkCOFqQQ5MEAIXJ10U60bQmpQFdSGaISeeiQwZ4tT3RkOw8V7qSIlXUVK3Zfbnm2FU"
+	}
 }
