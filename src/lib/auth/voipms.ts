@@ -4,6 +4,8 @@ import { generateSessionKey, encrypt } from "@/lib/crypto";
 const DECRYPTION_KEY_KEY = "voipms_decryption_key";
 
 export class VoipMsAuthAdapter implements AuthAdapter {
+  private _cachedSessionInfo: { decryptionKey: string } | null = null;
+
   async login(credentials: AuthCredentials): Promise<{ success: boolean; error?: string }> {
     try {
       // 1. Generate local decryption key
@@ -73,8 +75,15 @@ export class VoipMsAuthAdapter implements AuthAdapter {
     if (typeof window === "undefined") return null;
     const decryptionKey = localStorage.getItem(DECRYPTION_KEY_KEY);
 
-    if (!decryptionKey) return null;
-    return { decryptionKey };
+    if (!decryptionKey) {
+      this._cachedSessionInfo = null;
+      return null;
+    }
+
+    if (this._cachedSessionInfo?.decryptionKey !== decryptionKey) {
+      this._cachedSessionInfo = { decryptionKey };
+    }
+    return this._cachedSessionInfo;
   }
 
   isAuthenticated(): boolean {
