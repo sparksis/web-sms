@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
 import ServiceWorkerRegister from "@/components/organisms/ServiceWorkerRegister";
 
 const geistSans = Geist({
@@ -38,8 +39,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col overflow-hidden">
-        {children}
-        <ServiceWorkerRegister />
+        <UserProvider>
+          {children}
+          <ServiceWorkerRegister />
+        </UserProvider>
       </body>
     </html>
   );

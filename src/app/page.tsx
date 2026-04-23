@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import MainLayout from "@/components/templates/MainLayout";
 import LoginForm from "@/components/organisms/LoginForm";
 import ConversationList from "@/components/organisms/ConversationList";
@@ -10,14 +11,31 @@ import { useAuth } from "@/hooks/useAuth";
 import { useConversations } from "@/hooks/useConversations";
 
 export default function HomePage() {
+  const { user, isLoading: isUserLoading } = useUser();
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const { conversations, isLoading: isConvLoading, refetch } = useConversations();
   const [searchQuery, setSearchQuery] = useState("");
 
-  if (isAuthLoading) {
+  if (isUserLoading || (user && isAuthLoading)) {
     return (
       <div className="flex h-full items-center justify-center bg-zinc-50 dark:bg-black">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex h-full flex-col items-center justify-center bg-zinc-50 dark:bg-black p-4 text-center">
+        <h1 className="text-3xl font-bold text-primary mb-4">VoIP.ms SMS</h1>
+        <p className="mb-6 text-zinc-600 dark:text-zinc-400">Please sign in to continue.</p>
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a
+          href="/api/auth/login"
+          className="bg-primary text-white px-8 py-3 rounded-md font-medium hover:bg-primary-variant transition-colors"
+        >
+          Login
+        </a>
       </div>
     );
   }

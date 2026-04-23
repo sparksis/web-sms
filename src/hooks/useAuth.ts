@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { authAdapter } from "@/lib/auth/voipms";
+import { authAdapter, VoipMsAuthAdapter } from "@/lib/auth/voipms";
 import { AuthCredentials } from "@/lib/auth/types";
 
 export function useAuth() {
@@ -34,6 +34,6 @@ export function useAuth() {
     isLoading,
     login,
     logout,
-    credentials: authAdapter.getCredentials(),
+    sessionInfo: authAdapter.getSessionInfo(),
   };
 }
